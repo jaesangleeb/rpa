@@ -1,0 +1,22 @@
+[o] (1) direct_cost_ratio = order_processing_ratio + packaging_ratio + PG_ratio
+[o] (2) common_cost_ratio = COGS_ratio + direct_cost_ratio
+[o] (3) common_cost = total_gmv * (2)
+[o] (4) delivery_morning_cost = delivery_morning_ratio * total gmv
+
+
+(5) [delivery_morning] direct_cost_base_ratio = 일일트럭비율 -> df["sd_nm"].isin(["서울특별시", "경기도", "인천광역시"])
+
+
+(6) [delivery_morning] delivery_morning_cost * 일일트럭비율
+
+[o] (6) delivery_3pl_cost = delivery_3pl_ratio * total gmv
+[o] (7) delivery_morning_cj_cost = delivery_morning_cj_ratio * total gmv
+
+(8) [delivery_morning_cj] direct_cost_base_ratio = 충청 주문 수 비율 : 충청에 포함되는 도시 정의 -> df["sd_nm"].isin(["충청북도", "충청남도", "대전광역시", "세종특별자치시"])
+(9) [delivery_morning_cj] direct_cost_base_ratio = 부울 주문 수 비율 : 부울에 포함되는 도시 정의 -> df["sd_nm"].isin(["부산광역시", "울산광역시"])
+(10) [delivery_morning_cj] direct_cost_base_ratio = 대구 주문 수 비율 -> df["sd_nm"].isin(["대구광역시"])
+(11) [delivery_morning_cj] 대구 비용 = ((7) - dawn_choongchung_cost - dawn_buul_cost) * ord_cnt_ratio
+(12) [delivery_morning_cj] 충청 지역별 비용 = dawn_choongchung_cost * (8)
+(13) [delivery_morning_cj] 부울 지역별 비용 = dawn_buul_cost * (9)
+(14) [delivery_3pl] direct_cost_base_ratio = 택배 GMV 비율 = 시군구 GMV / 시도 GMV df["dlvy_type"].isin(["CJ_PARCEL"])
+(15) [delivery_3pl] 택배 비용 = delivery_3pl_cost * (13)
