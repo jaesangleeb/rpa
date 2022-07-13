@@ -1,5 +1,6 @@
 WITH cte AS (
     SELECT LEFT(ord_dt, 10) AS ord_dt,
+            ir.ord_cd,
             ir.center_cd,
             ir.prd_cd,
             ir.prd_nm,
@@ -63,6 +64,7 @@ SELECT
        cte.prd_cd,
        cte.prd_nm,
        prdinfo.catg_1_nm,
+       COUNT(DISTINCT cte.ord_cd) AS ord_cnt,
        SUM(cte.cnt) AS cnt,
        SUM(cte.prd_tot_price) AS gmv,
        SUM(cte.dc_prd_tot) AS dc,
@@ -78,5 +80,5 @@ SELECT
 FROM cte
 LEFT JOIN prdinfo
     ON cte.prd_cd = prdinfo.prd_cd
-GROUP BY 1, 2, 3, 4, 5, 11, 12, 13
+GROUP BY 1, 2, 3, 4, 5, 12, 13, 14
 ORDER BY gubn, gubn_detail, ord_dt, center_cd, prd_nm;
