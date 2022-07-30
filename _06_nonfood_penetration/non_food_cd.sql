@@ -2,7 +2,7 @@ SELECT SUBSTRING(ord_dt, 1, 7)   ord_ym,
        COUNT(DISTINCT cust_no)   cust_n,
        SUM(prd_tot_price)     AS gmv,
        COUNT(DISTINCT ord_cd) AS ord_cnt
-FROM mkrs_fa_schema.corp_ir_ord_prd_1m
+FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
 WHERE 1 = 1
   AND ord_dt >= {{ params.start_date }}
   AND ord_dt

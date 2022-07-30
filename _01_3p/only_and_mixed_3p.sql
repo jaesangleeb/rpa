@@ -1,8 +1,8 @@
 SELECT *
-FROM mkrs_fa_schema.corp_ir_ord_prd_1m
+FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
 WHERE ord_cd IN (
     SELECT ord_cd
-    FROM mkrs_fa_schema.corp_ir_ord_prd_1m
+    FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
     WHERE 1=1
       AND ord_dt >= {{ params.start_date }}
       AND ord_dt < {{ params.end_date }}

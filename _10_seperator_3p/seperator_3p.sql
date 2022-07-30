@@ -19,7 +19,7 @@ SELECT
        CASE WHEN d.prd_cd IS NOT NULL THEN d.args_a
        ELSE '기타' END AS dlvy_yn_3p,
        1 AS sku
-FROM mkrs_fa_schema.corp_ir_ord_prd_1m o
+FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m o
 LEFT JOIN dlvy_3p d
   ON o.prd_cd = d.prd_cd
 WHERE 1=1

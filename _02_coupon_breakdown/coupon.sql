@@ -3,11 +3,12 @@ WITH ordprd AS (
              ord_dt,
              ord_cd,
              coupon_name,
+             coupon_description,
              ptype,
-             prd_cd,
+             master_cd,
              publish_id,
              meta_id,
-             dc_prd_coupon,
+             dc_deal_coupon,
              free_shipping,
              center_cd,
              benefit_type,
@@ -17,7 +18,7 @@ WITH ordprd AS (
              CASE WHEN benefit_type = 'FREE_SHIPPING' THEN
                  (cnt / SUM(cnt) OVER (PARTITION BY ord_cd)::float8)*3000
                   ELSE 0 END AS free_shipping_distributed
-         FROM mkrs_fa_schema.corp_ir_ord_prd_1m
+         FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
          WHERE 1=1
            AND ord_dt >= {{ params.start_date }}
            AND ord_dt < {{ params.end_date }}
@@ -27,10 +28,11 @@ WITH ordprd AS (
                 ord_dt,
                 ord_cd,
                 coupon_name,
+                coupon_description,
                 ptype,
                 publish_id,
                 meta_id,
-                SUM(dc_prd_coupon) AS dc_prd_coupon,
+                SUM(dc_deal_coupon) AS dc_deal_coupon,
                 free_shipping,
                 center_cd,
                 benefit_type,
@@ -45,11 +47,12 @@ SELECT
        LEFT(ord_dt, 7) AS ord_ym,
        CASE WHEN coupon_name IS NULL THEN '더퍼플'
             ELSE coupon_name END AS coupon_name,
+       coupon_description,
        ptype,
        publish_id,
        meta_id,
        SUM(CASE WHEN benefit_type = 'FREE_SHIPPING' THEN free_shipping_distributed
-                ELSE dc_prd_coupon END)::float8 AS dc_prd_coupon,
+                ELSE dc_deal_coupon END)::float8 AS dc_deal_coupon,
        COUNT(DISTINCT ord_cd) AS ord_cnt,
        center_cd,
        CASE WHEN benefit_type IS NULL THEN 'PERCENT_DISCOUNT'
