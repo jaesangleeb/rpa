@@ -4,7 +4,7 @@ SELECT
        catg_2_nm,
        COUNT(DISTINCT ord_cd) AS ord_cnt,
        COUNT(DISTINCT cust_no) AS purchaser,
-       SUM(deal_tot_price) AS gmv,
+       SUM(gmv_retail) AS gmv,
        SUM(dc_deal_tot) AS dc_prd,
        SUM(dc_deal_coupon) AS dc_coupon,
        SUM(dc_deal_point) AS dc_point

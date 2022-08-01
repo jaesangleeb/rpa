@@ -41,7 +41,7 @@ WITH ordprd AS (
                 sharing_ratio,
                 SUM(free_shipping_distributed)AS free_shipping_distributed
     FROM ordprd
-    GROUP BY 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13
+    GROUP BY 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14
 )
 SELECT
        LEFT(ord_dt, 7) AS ord_ym,
@@ -69,5 +69,5 @@ SELECT
             ELSE reason2 END AS reason2,
        sharing_ratio
 FROM ord
-GROUP BY 1, 2, 3, 4, 5, 8, 9, 10, 11, 12
+GROUP BY 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13
 ORDER BY 1 DESC;

@@ -20,9 +20,9 @@ SELECT
     COALESCE(n.values_a, 'food') AS nonfood,
     o.ptype,
     o.sourcing_type,
-    o.strage_type,
-    o.tax
-    SUM(o.deal_tot_price) AS gmv,
+    o.storage_type,
+    o.tax,
+    SUM(o.gmv_retail) AS gmv,
     SUM(o.dc_deal_tot) AS gmv,
     SUM(o.new_dc_deal_tot) AS gmv,
     SUM(o.dc_deal_coupon) AS gmv,

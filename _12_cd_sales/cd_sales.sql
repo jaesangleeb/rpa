@@ -3,13 +3,13 @@ WITH cte AS (
            ord_cd,
            center_cd,
            cust_no,
-           dc_deal_point,
-           dc_point,
+           gmv_retail,
            dc_deal_tot,
            new_dc_deal_tot,
            dc_deal_coupon,
+           dc_deal_point,
            free_shipping,
-           dlvy_cost,
+           dlvy_cost::INTEGER,
            cnt,
            ROW_NUMBER() OVER (PARTITION BY ord_cd) AS row_no
     FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
@@ -20,7 +20,7 @@ WITH cte AS (
 SELECT
   LEFT(ord_dt,7) AS ord_ym,
   center_cd,
-  SUM(deal_tot_price) AS gmv,
+  SUM(gmv_retail) AS gmv,
   SUM(dc_deal_tot) AS dc_deal_tot,
   SUM(dc_deal_coupon) AS dc_deal_coupon,
   SUM(CASE WHEN row_no=1 THEN free_shipping ELSE 0 END) AS free_shipping,

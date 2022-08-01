@@ -42,7 +42,7 @@ def main():
                                                                       m_prev,
                                                                       now_history_day,
                                                                       now_history_time)
-    # drive_path = os.environ["PROC"]
+    drive_path = os.environ["PROC"]
 
     df.to_excel(os.path.join(drive_path, fname), index=False)
 

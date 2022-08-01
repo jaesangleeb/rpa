@@ -5,7 +5,7 @@ WITH cte AS (
     op.master_cd,
     op.master_nm,
     op.cnt,
-    op.deal_tot_price,
+    op.gmv_retail,
     op.dc_deal_tot,
     op.dc_deal_coupon,
     op.dc_deal_point,
@@ -30,7 +30,7 @@ WITH cte AS (
 --             CASE WHEN ir.prd_nm LIKE '%%설치배송%%' THEN SPLIT_PART(SPLIT_PART(ir.prd_nm, ']', 1), '[', 2)
 --                  ELSE gubn END AS gubn_detail
     CASE WHEN op.master_nm LIKE '%%설치배송%%' THEN SPLIT_PART(SPLIT_PART(op.master_nm, ']', 2), '[', 2)
-    ELSE gubn END AS gubn_detail
+    ELSE gubn END AS gubn_detail,
     catg_1_nm
     FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m op
     WHERE 1 = 1
@@ -46,10 +46,10 @@ SELECT
        cte.catg_1_nm,
        COUNT(DISTINCT cte.ord_cd) AS ord_cnt,
        SUM(cte.cnt) AS cnt,
-       SUM(cte.deal_tot_price) AS gmv,
-       SUM(cte.dc_deal_tot) AS dc,
-       SUM(cte.dc_deal_coupon) AS coupon,
-       SUM(cte.dc_deal_point) AS using_point,
+       SUM(cte.gmv_retail) AS gmv,
+       SUM(cte.dc_deal_tot) AS dc_deal_tot,
+       SUM(cte.dc_deal_coupon) AS dc_deal_coupon,
+       SUM(cte.dc_deal_point) AS dc_deal_point,
        cte.ptype,
        gubn,
        gubn_detail
@@ -59,4 +59,4 @@ SELECT
 --        ELSE gubn_detail END AS gubn_detail
 FROM cte
 GROUP BY 1, 2, 3, 4, 5, 12, 13, 14
-ORDER BY gubn, gubn_detail, ord_dt, center_cd, prd_nm;
+ORDER BY gubn, gubn_detail, ord_dt, center_cd, master_nm;

@@ -1,12 +1,12 @@
 SELECT SUBSTRING(ord_dt, 1, 7)   ord_ym,
        COUNT(DISTINCT cust_no)   cust_n,
-       SUM(deal_tot_price)     AS gmv,
+       SUM(gmv_retail)     AS gmv,
        COUNT(DISTINCT ord_cd) AS ord_cnt
 FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
 WHERE 1 = 1
   AND ord_dt >= {{ params.start_date }}
   AND ord_dt < {{ params.end_date }}
-  AND prd_status < 40
+  AND deal_status < 40
   AND catg_1_nm in ('가전제품'
     , '반려동물'
     , '뷰티'
