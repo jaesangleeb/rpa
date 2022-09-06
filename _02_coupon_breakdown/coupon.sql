@@ -22,6 +22,7 @@ WITH ordprd AS (
          WHERE 1=1
            AND ord_dt >= {{ params.start_date }}
            AND ord_dt < {{ params.end_date }}
+           AND deal_status < 40
      ),
      ord AS (
          SELECT
