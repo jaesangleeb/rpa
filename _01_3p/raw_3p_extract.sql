@@ -6,6 +6,7 @@ WITH cte AS (
     op.master_nm,
     op.cnt,
     op.gmv_retail,
+    op.deal_tot_price,
     op.dc_deal_tot,
     op.dc_deal_coupon,
     op.dc_deal_point,
@@ -25,18 +26,19 @@ WITH cte AS (
     WHEN op.master_nm LIKE '%%업체배송%%' THEN '업체배송'
     WHEN op.master_nm LIKE '%%택배수령%%' THEN '택배수령'
     WHEN op.master_nm SIMILAR TO '%%해외여행%%|%%국내여행%%' THEN '여행'
-    ELSE NULL END AS gubn,
+    ELSE '그외' END AS gubn,
 -- '22년 5월은 MD분들이 문자열 반대순서로 넣음
 --             CASE WHEN ir.prd_nm LIKE '%%설치배송%%' THEN SPLIT_PART(SPLIT_PART(ir.prd_nm, ']', 1), '[', 2)
 --                  ELSE gubn END AS gubn_detail
     CASE WHEN op.master_nm LIKE '%%설치배송%%' THEN SPLIT_PART(SPLIT_PART(op.master_nm, ']', 2), '[', 2)
     ELSE gubn END AS gubn_detail,
     catg_1_nm
-    FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m op
+    FROM mkrs_fa_schema.u_corpdev_ord_prd_1d op
     WHERE 1 = 1
        AND op.ptype = '3p'
        AND LEFT(op.ord_dt, 10) >= {{ params.start_date }}
        AND LEFT(op.ord_dt, 10) < {{ params.end_date }}
+       AND deal_status < 40
 )
 SELECT
        cte.ord_dt,
@@ -46,7 +48,8 @@ SELECT
        cte.catg_1_nm,
        COUNT(DISTINCT cte.ord_cd) AS ord_cnt,
        SUM(cte.cnt) AS cnt,
-       SUM(cte.gmv_retail) AS gmv,
+       SUM(cte.gmv_retail) AS gmv1,
+       SUM(cte.deal_tot_price) AS gmv2,
        SUM(cte.dc_deal_tot) AS dc_deal_tot,
        SUM(cte.dc_deal_coupon) AS dc_deal_coupon,
        SUM(cte.dc_deal_point) AS dc_deal_point,
@@ -58,5 +61,5 @@ SELECT
 --        CASE WHEN prdinfo.catg_1_nm LIKE '%%여행/문화/서비스%%' THEN '여행'
 --        ELSE gubn_detail END AS gubn_detail
 FROM cte
-GROUP BY 1, 2, 3, 4, 5, 12, 13, 14
+GROUP BY 1, 2, 3, 4, 5, 13, 14, 15
 ORDER BY gubn, gubn_detail, ord_dt, center_cd, master_nm;

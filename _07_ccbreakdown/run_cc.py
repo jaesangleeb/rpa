@@ -32,6 +32,8 @@ def main():
     cursor = engine.connect()
 
     params = DateSetter('default').setter()
+    # params = {"start_date": "'2022-07-01'",
+    #           "end_date": "'2022-08-01'"}
 
     sql = Reader('./templates/_07_ccbreakdown/ccbreakdown_gmv.sql').text
 

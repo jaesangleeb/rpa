@@ -8,7 +8,7 @@ SELECT
        SUM(dc_deal_tot) AS dc_prd,
        SUM(dc_deal_coupon) AS dc_coupon,
        SUM(dc_deal_point) AS dc_point
-FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
+FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
 WHERE 1=1
   AND catg_1_nm = '뷰티'
   AND ord_dt >= {{ params.start_date }}

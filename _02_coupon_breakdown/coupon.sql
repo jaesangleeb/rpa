@@ -18,7 +18,7 @@ WITH ordprd AS (
              CASE WHEN benefit_type = 'FREE_SHIPPING' THEN
                  (cnt / SUM(cnt) OVER (PARTITION BY ord_cd)::float8)*3000
                   ELSE 0 END AS free_shipping_distributed
-         FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
+         FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
          WHERE 1=1
            AND ord_dt >= {{ params.start_date }}
            AND ord_dt < {{ params.end_date }}

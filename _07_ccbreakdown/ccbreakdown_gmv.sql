@@ -4,10 +4,11 @@
     'TOTAL' AS feature,
     center_cd,
     SUM(gmv_retail) AS GMV
-FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
+FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
 WHERE 1=1
   AND ord_dt >= {{ params.start_date }}
   AND ord_dt < {{ params.end_date }}
+  AND deal_status < 40
 GROUP BY 1, 2, 3)
 UNION ALL
 (SELECT
@@ -15,11 +16,12 @@ UNION ALL
     '1p',
     center_cd,
     SUM(gmv_retail) AS GMV
-FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
+FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
 WHERE 1=1
   AND ord_dt >= {{ params.start_date }}
   AND ord_dt < {{ params.end_date }}
   AND ptype = '1p'
+  AND deal_status < 40
 GROUP BY 1, 2, 3)
 UNION ALL
 (SELECT
@@ -27,11 +29,12 @@ UNION ALL
     '3p',
     center_cd,
     SUM(gmv_retail) AS GMV
-FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
+FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
 WHERE 1=1
   AND ord_dt >= {{ params.start_date }}
   AND ord_dt < {{ params.end_date }}
   AND ptype = '3p'
+  AND deal_status < 40
 GROUP BY 1, 2, 3)
 UNION ALL
 (SELECT
@@ -39,9 +42,10 @@ UNION ALL
     'Beauty',
     center_cd,
     SUM(gmv_retail) AS GMV
-FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m
+FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
 WHERE 1=1
   AND ord_dt >= {{ params.start_date }}
   AND ord_dt < {{ params.end_date }}
   AND catg_1_nm like '%%뷰티%%'
+  AND deal_status < 40
 GROUP BY 1, 2, 3)

@@ -37,11 +37,11 @@ def main():
     agg_func = {
         "ord_cd": pd.Series.nunique,
         "cnt": sum,
-        "prd_tot_price": sum,
-        "dc_prd_coupon": sum,
+        "gmv_retail": sum,
+        "dc_deal_coupon": sum,
         "free_shipping": sum,
-        "dc_prd_tot": sum,
-        "using_point": sum
+        "dc_deal_tot": sum,
+        "dc_deal_point": sum
     }
 
     # module 3) 3P 집계 데이터
@@ -62,8 +62,8 @@ def main():
     result = res.groupby(by=["ord_ym", "only_yn", "yn_3p_x", "dlvy_yn_3p"]).agg(agg_func).reset_index()
     result["3p_yn"] = np.where(result["yn_3p_x"] == 1, "3p", "1p")
     result = result[
-        ["ord_ym", "only_yn", "3p_yn", "dlvy_yn_3p", "ord_cd", "cnt", "prd_tot_price", "dc_prd_coupon", "free_shipping",
-         "dc_prd_tot", "using_point"]]
+        ["ord_ym", "only_yn", "3p_yn", "dlvy_yn_3p", "ord_cd", "cnt", "gmv_retail", "dc_deal_coupon", "free_shipping",
+         "dc_deal_tot", "dc_deal_point"]]
     result = result.rename({"dlvy_yn_3p": "3p_dlvy_yn",
                             "ord_cd": "ord_cnt"}, axis="columns")
 

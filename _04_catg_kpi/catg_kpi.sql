@@ -28,7 +28,7 @@ SELECT
     SUM(o.dc_deal_coupon) AS gmv,
     SUM(o.dc_deal_point) AS gmv,
     SUM(o.cnt) AS units
-FROM mkrs_fa_schema.u_corp_ir_ord_prd_1m o
+FROM mkrs_fa_schema.u_corpdev_ord_prd_1d o
 LEFT JOIN mkrs_schema.vendor_goods_master v
   ON o.master_cd = v.goods_code
 LEFT JOIN nonfood n
