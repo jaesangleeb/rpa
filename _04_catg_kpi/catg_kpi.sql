@@ -23,10 +23,10 @@ SELECT
     o.storage_type,
     o.tax,
     SUM(o.gmv_retail) AS gmv,
-    SUM(o.dc_deal_tot) AS gmv,
-    SUM(o.new_dc_deal_tot) AS gmv,
-    SUM(o.dc_deal_coupon) AS gmv,
-    SUM(o.dc_deal_point) AS gmv,
+    SUM(o.dc_deal_tot) AS dc_deal_tot,
+    SUM(o.new_dc_deal_tot) AS new_dc_deal_tot,
+    SUM(o.dc_deal_coupon) AS dc_deal_coupon,
+    SUM(o.dc_deal_point) AS dc_deal_point,
     SUM(o.cnt) AS units
 FROM mkrs_fa_schema.u_corpdev_ord_prd_1d o
 LEFT JOIN mkrs_schema.vendor_goods_master v
