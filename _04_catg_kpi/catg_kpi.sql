@@ -20,7 +20,8 @@ SELECT
     COALESCE(n.values_a, 'food') AS nonfood,
     o.ptype,
     o.sourcing_type,
-    o.storage_type,
+    o.storage_type AS cms_storage_type,
+    v.kurly_keep_type AS escm_kurly_keep_type,
     o.tax,
     SUM(o.gmv_retail) AS gmv,
     SUM(o.dc_deal_tot) AS dc_deal_tot,
@@ -35,5 +36,6 @@ LEFT JOIN nonfood n
   ON o.master_cd = n.master_cd
 WHERE 1=1
   AND o.ord_dt >= {{ params.start_date }}
-  AND o.ord_dt < {{ params.end_date }}
-GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10;
+  AND o.ord_dt < {{ params.start_date }}
+  AND o.deal_status < 40
+GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11;
