@@ -35,7 +35,7 @@ LEFT JOIN mkrs_schema.vendor_goods_master v
 LEFT JOIN nonfood n
   ON o.master_cd = n.master_cd
 WHERE 1=1
-  AND o.ord_dt >= {{ params.start_date }}
-  AND o.ord_dt < {{ params.start_date }}
+  AND o.ord_dt >= '2022-07-01'
+  AND o.ord_dt < '2022-09-27'
   AND o.deal_status < 40
 GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11;

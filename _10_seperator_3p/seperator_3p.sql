@@ -1,36 +1,63 @@
-WITH dlvy_3p AS(
-  SELECT
-    pio.master_cd,
-    pio.master_nm,
-    cmi.args_a
-  FROM mkrs_aa_schema.u_prd_info_1d pio
-  INNER JOIN mkrs_fa_schema.cd_master_info cmi
-    ON pio.master_nm LIKE '%%'||cmi.args_a||'%%'
-      or (pio.master_nm like '%%'||cmi.args_a||'%%' and pio.master_nm like '%%'||cmi.args_b||'%%')
-      -- args 증가시 추가
-      --  or (pio.prd_nm like '%%'||cmi.args_a||'%%' and pio.prd_nm like '%%'||cmi.args_b||'%%')
-  WHERE cmi.keys = 'dlvy_3p'
-)
+WITH thirdparty AS
+         (
+             SELECT ord_cd
+             FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
+             WHERE 1 = 1
+               AND ptype = '3p'
+               AND ord_dt >= {{ params.start_date }}
+               AND ord_dt < {{ params.end_date }}
+               AND deal_status < 40
+             GROUP BY 1
+         ),
+     thirdparty2 AS (
+         SELECT group_ord_cd
+         FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
+         WHERE 1 = 1
+           AND ord_cd IN (SELECT * FROM thirdparty)
+           AND deal_status < 40
+         GROUP BY 1
+     ),
+     thirdparty3 AS(
+         SELECT
+                *,
+                CASE WHEN ptype = '3p' THEN 1 ELSE 0 END AS ptype_yn
+         FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
+         WHERE 1 = 1
+           AND group_ord_cd IN (SELECT * FROM thirdparty2)
+           AND deal_status < 40
+     ),
+     only_sool AS(
+         SELECT
+                group_ord_cd
+         FROM thirdparty3
+         GROUP BY 1
+         HAVING SUM(ptype_yn) = COUNT(ord_cd)
+     ),
+     mixed_sool AS(
+         SELECT
+                group_ord_cd
+         FROM thirdparty3
+         GROUP BY 1
+         HAVING SUM(ptype_yn) != COUNT(ord_cd)
+     ),
+     fin AS(
+         (SELECT *, 'ONLY' AS mixed_yn FROM thirdparty3 WHERE group_ord_cd IN (SELECT * FROM only_sool))
+         UNION ALL
+         (SELECT *, 'MIXED' AS mixed_yn FROM thirdparty3 WHERE group_ord_cd IN (SELECT * FROM mixed_sool))
+     )
 SELECT
-       o.*,
        LEFT(ord_dt, 7) AS ord_ym,
-       CASE WHEN o.ptype = '3p' THEN 1
-       ELSE 0 END AS yn_3p,
-       CASE WHEN d.master_cd IS NOT NULL THEN d.args_a
-       ELSE '기타' END AS dlvy_yn_3p,
-       1 AS sku
-FROM mkrs_fa_schema.u_corpdev_ord_prd_1d o
-LEFT JOIN dlvy_3p d
-  ON o.master_cd = d.master_cd
-WHERE 1=1
-  AND ord_cd IN
-      (
-          SELECT ord_cd
-          FROM mkrs_fa_schema.u_corpdev_ord_prd_1d
-          WHERE 1 = 1
-            AND ord_dt >= {{ params.start_date }}
-            AND ord_dt < {{ params.end_date }}
-            AND ptype = '3p'
-            AND deal_status < 40
-          GROUP BY 1
-      );
+       mixed_yn,
+       ptype,
+       catg_1_nm,
+       catg_2_nm,
+       COUNT(DISTINCT group_ord_cd) AS ord_cnt,
+       COUNT(DISTINCT cust_no) AS purchasers,
+       SUM(gmv_retail) AS gmv1,
+       SUM(deal_tot_price) AS gmv2,
+       SUM(dc_deal_tot) AS dc_deal_tot,
+       SUM(dc_deal_coupon) AS dc_deal_coupon,
+       SUM(dc_deal_point) AS dc_deal_point
+FROM fin
+GROUP BY 1, 2, 3, 4, 5
+ORDER BY 1, 2, 3, 4, 5
